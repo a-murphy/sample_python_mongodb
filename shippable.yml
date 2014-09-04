@@ -1,5 +1,8 @@
 python:
  - 2.7
+ - pypy
+ 
+parallelize_test: true
 
 matrix:
  allow_failures: 
