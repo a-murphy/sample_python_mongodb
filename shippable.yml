@@ -1,31 +1,25 @@
 language: python
 
 python:
- - 2.7
- - pypy
- 
-parallelized_test: true
+  - 2.7
 
-matrix:
- allow_failures: 
-  - python: pypy
+env:
+  global:
+    - FOO=BOO ONE=1
 
-# Mongo binds to 127.0.0.1 by default
 services:
  - mongodb
 
-install:
- - pip install -r requirements.txt
-
-# Make folders for the reports
-before_script:
- - mkdir -p shippable/testresults
- - mkdir -p shippable/codecoverage
-
-script:
- - nosetests test.py --with-xunit --xunit-file=shippable/testresults/nosetests.xml
- - which python && coverage run --branch test.py
- - which python && coverage xml -o shippable/codecoverage/coverage.xml test.py
- - exit 0
-
-build_image: shippable/minv2
+build:
+  pre_ci_boot:
+    image_name: drydock/u14pytall
+    image_tag: tip
+    pull: true
+  ci:
+    - pip install -r requirements.txt
+    - mkdir -p shippable/testresults
+    - mkdir -p shippable/codecoverage
+    - nosetests test.py --with-xunit --xunit-file=shippable/testresults/nosetests.xml
+    - which python && coverage run --branch test.py
+    - which python && coverage xml -o shippable/codecoverage/coverage.xml test.py
+    - exit 0
